@@ -47,7 +47,7 @@ int main() {
 	Pos T[9];
 	int tcount = 0;
 	
-	Pos F[9];
+	Pos F[9]; //Contains the available cells when start is true
 	int fcount = 9;
 	
 	for (int i = 0; i < 9; i++) {
@@ -57,35 +57,31 @@ int main() {
 	do{
 		Pos pos;
 		
-		printf("Enter cell (x y): ");
-    	scanf("%d %d", &pos.x, &pos.y);
-    	
-		
-	
-	} while(!GameOver(fcount, val, start, rcount, bcount));
-	
-	
+		do{
+			printf("Enter cell (x y): ");
+    		scanf("%d %d", &pos.x, &pos.y);
+    		nextplayermove(pos, &good, &start, &go, &found F, R, B, S, T, &rcount, &bcount, &scount, &fcount, &tcount, &val);
+		}while(!good);
 
+    	GameOver(fcount, val, start, rcount, bcount, &over);
+    	
+	} while(!over);
+	
+	printf("\nGame Over\n");
+	
+	if(rcount > bcount){
+		printf("R wins");
+		
+	}
+	else if(bcount > rcount){
+		printf("B wins");
+	}
+	else{
+		printf("draw");
+	}
+	
 	return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

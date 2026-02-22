@@ -1,113 +1,187 @@
 #include <stdio.h>
 #include <stdbool.h>
-bool GameOver(int fcount, int val, bool start, int rcount, int bcount){
+void GameOver(int fcount, int val, bool start, int rcount, int bcount, bool *over){
 	
 	if(fcount == 3 || val >= 20 || !start && ((rcount > 0 && bcount == 0) || (rcount == 0 && bcount > 0))){
-		return true;
+		*over = true;
 	}
-	
-	return false;
 }
 
-void remove(Pos arr[], int *count, Pos target){
-	
-}
-
-void replace(Pos arr[], Pos target, int count){
-	
-}
-      
-void expand(Pos arr[], int *count, int additional, Pos target[]){	
-	
-}
-
-void update(Pos target, Pos arrS[], Pos arrT[], int *scount, int *tcount, *good){
-	*good = false;
-	
-	int j, k;
-	int i, m;
-	
-	j = 0;
-	k = 0;
-	for (i = 0; i < *scount; i++){
-		if(target == arrS[i]){
-			j = 1;;
+int checker(Pos target, Pos arr[], count){ //checks if a cell is a member of a set
+	for(int i = 0; i < count; i++){
+		if(target.x == arr[i].x && target.y == arr[i].y){
+			return 1;
 		}
 	}
 	
-	for (m = 0; i < *tcount; m++){
-		if(target == arrT[m]){
-			k = 1;
-		}		
+	return 0;
+}
+
+void getrid(Pos target, Pos arr[], int *count){
+	int i;
+	int remdex;
+	for(i = 0; i < *count; i++){
+		if(pos.x == arrF[i].x && pos.y == arrF[i].y){
+			remdex = i;
+		}
+	}
+
+	for(int j = remdex; j < count-1; j++){
+		arr[j] = arr[j+1];				
+	}
+	(*count)--;	
+}
+
+void remove(Pos arrR[], Pos arrB[], int *rcount, int *bcount, Pos target, bool *go){
+	if(*go){
+		
 	}
 	
-	if(j == 0){
+	else{
+		
+	}
+}
+
+void replace(Pos arrR[], Pos arrB[], Pos arrS[], Pos arrT[], int *rcount, int *bcount, int *scount, int *tcount, Pos target, bool *found){
+	*found = false;
+	int r = 0, b = 0;
+
+	if(checker(target, arrR, *rcount)){
+		r = 1;
+	}
+
+	if(checker(target, arrB, *bcount)){
+		b = 1;
+	}
+	
+	if(*go){
+		if(b){
+				
+		}
+		if(r){
+			*found = true;
+		}
+		if(!r){
+
+		}
+		
+	}
+	else{
+		
+	}
+}
+	
+void expand(Pos arrR[], Pos arrB[], Pos arrS[], Pos arrT[], int *rcount, int *bcount, int *scount, int *tcount, Pos target, bool *found, bool *go){	
+	int a, b;
+	a = target.x;
+	b = target.y;
+	Pos neighbors[4];
+	int n = 0;
+	
+	if (a > 1){ //up
+		neighbors[n++] = (Pos){a-1, b};
+		replace(arrR, arrB, arrS, arrT, rcount, bcount, scount, tcount, neighbors[n-1], found);
+	}
+	if(a < 3){ //down
+		neighbors[n++] = (Pos){a+1, b};
+		replace(arrR, arrB, arrS, arrT, rcount, bcount, scount, tcount, neighbors[n-1], found);
+	}
+	if(b > 1){ //left
+		neighbors[n++] = (Pos){a, b-1};
+		replace(arrR, arrB, arrS, arrT, rcount, bcount, scount, tcount, neighbors[n-1], found);
+	}
+	if(b < 3){ //right
+		neighbors[n++] = (Pos){a, b+1};
+		replace(arrR, arrB, arrS, arrT, rcount, bcount, scount, tcount, neighbors[n-1], found);
+	}
+
+	remove(arrR, arrB, rcount, bcount, target, go);
+
+}
+
+void update(Pos target, Pos arrR[], Pos arrB[], Pos arrS[], Pos arrT[], int *rcount, int *bcount, int *scount, int *tcount, bool *found, bool *go){
+	int s = 0, t = 0;
+
+	if(checker(target, arrS, *scount)){
+		s = 1;
+	}
+	
+	if(checker(target, arrT, *tcount)){
+		t = 1;
+	}
+	
+	if(!s){
 		arrS[*scount] = target;
 		(*scount)++;
 		*good = !(*good);
 	}
 	
-	else if(!(*good) && j == 1 && k == 0){
+	if(!(*good) && !t){
 		arrT[*tcount] = target;
 		(*tcount)++;
-		expand();
+		expand(arrR, arrB, arrS, arrT, rcount, bcount, scount, tcount, target, found, go);
 	}
 }
 
-void nextplayermove(Pos pos, bool *good, bool *over, bool *start, bool *go, Poss arrF[], Pos arrR[], Pos arrB[], Pos arrS[], int *rcount, int *bcount, int *scount, int *fcount, int *val){
+void nextplayermove(Pos pos, bool *good, bool *start, bool *go, bool *found, Poss arrF[], Pos arrR[], Pos arrB[], Pos arrS[], Pos arrT[] int *rcount, int *bcount,
+ int *scount, int *fcount, int *tcount, int *val){
+
+	*good = false;
 	
-	if (!(*over) && *start && *go){
-		arrR[*rcount] = pos;
-		arrS[*scount] = pos;
-		(*rcount)++;
-		(*scount)++;
-		(*fcount)--;
-		*good = true;
+	if(*start){     //start phase
+
+		if(checker(pos, arrF, fcount)){
+			*good = true;
+			getrid(pos, arrF, fcount);
+		}
+		
+		if(*good){
+			arrS[*scount] = pos;
+			(*scount)++;
+			
+			if(*go){
+				arrR[*rcount] = pos;
+				(*rcount)++;
+			}
+			else{
+				arrB[*bcount] = pos;
+				(*bcount)++;
+			}
+			*go = !(*go);
+			*good =!(*good);
+			(*val)++;
+
+		}
+		
+		if(*rcount == 1 && *bcount == 1){
+			*start = false;
+		}	
+		
 	}
 	
-	else if (!(*over) && *start && !(*go)){
-		arrR[*bcount] = pos;
-		arrS[*scount] = pos;
-		(*bcount)++;
-		(*scount)++;
-		(*fcount)--;
-		*good = true;
-	}
-	
-	int j = 0;
-	int k = 0;
-	
-	for(int i = 0; i < *rcount; i++){
-		if(pos.x == arrR[i].x && pos.y == arrR[i].y){
-			j = 1;
+	else{     //expand phase
+		if(*go){
+			for(int i = 0; i < *rcount && !(*good); i++){
+				if(pos.x == arrR[i].x && pos.y ==arrR[i].y){
+					*good = true;
+				}
+			}
+		}
+		else{
+			for(int j = 0; j < *bcount && !(*good); j++){
+				if(pos.x == arrB[j].x && pos.y ==arrB[j].y){
+					*good = true;
+				}
+			}			
+		}
+		
+		if(*good){
+			*go = !(*go);
+			*good = false;
+			(*val)++;
+			update(pos, arrR, arrB, arrS, arrT, rcount, bcount, scount, tcount, found, go);
 		}
 	}
 	
-	for(int l = 0; l < *bcount; l++){
-		if(pos.x == arrB[l].x && pos.y == arrB[l].y){
-			k = 1;
-		}		
-	}
-	
-	if (!(*over) && !(*start) && ((*go && j == 1) || (!(*go) && k ==1))){
-		update();
-		*good = true;
-	}
-	
-	if(*start && *rcount == 1 && *bcount == 1){
-		*start = false;
-	}
-	
-	if(!(*over) && *good){
-		*good = !(*good);
-		*go = !(*go);
-		(*val)++;
-	}	
 }
-
-
-
-
-
-
 
