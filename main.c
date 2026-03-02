@@ -1,12 +1,4 @@
-#include <stdio.h>
-#include <stdbool.h>
-#include <string.h>
 #include "functions_dstru.c"
-
-typedef struct {
-	int x;
-	int y;
-} Pos;
 
 int main() {
 
@@ -58,23 +50,41 @@ int main() {
 		Pos pos;
 		
 		do{
-			printf("Enter cell (x y): ");
+			display(M, R, B, rcount, bcount);
+			
+			if(start){
+				printf("*****Starting Phase*****\n");
+				printf("Pick a starting position\n");
+				
+			}
+			else{
+				printf("*****Expansion Phase*****\n");
+				printf("Note: A player can only pick a cell that is in their possesion\n");
+			}	
+					
+			if(go){
+				printf("Enter a cell for R (x y): ");
+			}
+			else{
+				printf("Enter a cell for B (x y): ");
+			}
     		scanf("%d %d", &pos.x, &pos.y);
-    		nextplayermove(pos, &good, &start, &go, &found F, R, B, S, T, &rcount, &bcount, &scount, &fcount, &tcount, &val);
+    		nextplayermove(pos, &good, &start, &go, &found, F, R, B, S, T, &rcount, &bcount, &scount, &fcount, &tcount, &val);
 		}while(!good);
 
     	GameOver(fcount, val, start, rcount, bcount, &over);
     	
 	} while(!over);
 	
+	
 	printf("\nGame Over\n");
 	
 	if(rcount > bcount){
-		printf("R wins");
+		printf("R won");
 		
 	}
 	else if(bcount > rcount){
-		printf("B wins");
+		printf("B won");
 	}
 	else{
 		printf("draw");
