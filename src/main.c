@@ -1,4 +1,4 @@
-#include "functions_dstru.c"
+#include "../include/header.h"
 
 int main() {
 

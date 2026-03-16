@@ -1,4 +1,4 @@
-#include "header.h"
+#include "../include/header.h"
 
 void GameOver(int fcount, int val, bool start, int rcount, int bcount, bool *over){
 	if((fcount == 3 || val >= 20 || !start) && ((rcount > 0 && bcount == 0) || (rcount == 0 && bcount > 0))){
