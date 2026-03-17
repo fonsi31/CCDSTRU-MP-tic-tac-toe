@@ -27,10 +27,10 @@ int main() {
 		n++;
 	}
 	
-	Pos R[9];
+	Pos R[9]; //stores player R cells
 	int rcount = 0;
 	
-	Pos B[9];
+	Pos B[9]; //stores player B cells
 	int bcount = 0;
 	
 	Pos S[9];
@@ -39,17 +39,17 @@ int main() {
 	Pos T[9];
 	int tcount = 0;
 	
-	Pos F[9]; //Contains the available cells when start is true
+	Pos F[9]; //Contains free cells
 	int fcount = 9;
 	
 	for (int i = 0; i < 9; i++) {
     	F[i] = M[i];
-	}		
+	}	
 	
 	do{
 		Pos pos;
-		
 		do{
+			system("cls");
 			display(M, R, B, rcount, bcount);
 			
 			if(start){
@@ -70,25 +70,27 @@ int main() {
 			}
     		scanf("%d %d", &pos.x, &pos.y);
     		nextplayermove(pos, &good, &start, &go, &found, F, R, B, S, T, &rcount, &bcount, &scount, &fcount, &tcount, &val);
+    		
 		}while(!good);
-
-    	GameOver(fcount, val, start, rcount, bcount, &over);
-    	
+		
+		GameOver(fcount, val, start, rcount, bcount, &over);
 	} while(!over);
-	
 	
 	printf("\nGame Over\n");
 	
 	if(rcount > bcount){
-		printf("R won");
+		printf("R WON");
 		
 	}
 	else if(bcount > rcount){
-		printf("B won");
+		printf("B WON");
 	}
 	else{
 		printf("draw");
 	}
+	printf("\n");
+	printf("\nFinal Board:\n");
+	display(M, R, B, rcount, bcount);
 	
 	return 0;
 }

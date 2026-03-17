@@ -18,20 +18,17 @@ int checker(Pos target, Pos arr[], int count){ //checks if a cell is a member of
 void getrid(Pos target, Pos arr[], int *count){
 	int remdex = -1;
 
-	for(int i = 0; i < *count; i++){
+	for(int i = 0; i < *count && remdex == -1; i++){
 	    if(target.x == arr[i].x && target.y == arr[i].y){
 	        remdex = i;
-	        break;
 	    }
 	}
-
-	if(remdex == -1) return;
-	
-	for(int j = remdex; j < *count - 1; j++){
-	    arr[j] = arr[j+1];
+	if(remdex != -1){
+		for(int j = remdex; j < *count - 1; j++){
+			arr[j] = arr[j+1];
+		}
+		(*count)--;
 	}
-	
-	(*count)--;
 }
 
 void removePos(Pos arrR[], Pos arrB[], Pos arrS[], Pos arrT[], int *rcount, int *bcount,int *scount, int *tcount, Pos target, bool *go){
@@ -48,16 +45,6 @@ void removePos(Pos arrR[], Pos arrB[], Pos arrS[], Pos arrT[], int *rcount, int 
 
 void replace(Pos arrR[], Pos arrB[], Pos arrS[], Pos arrT[], Pos arrF[], int *rcount, int *bcount, int *scount, int *tcount, int *fcount, Pos target, bool *found, bool *go){
 	*found = false;
-	int s = 0, t = 0;
-
-	if(checker(target, arrS, *scount)){
-		s = 1;
-	}
-
-	if(checker(target, arrT, *tcount)){
-		t = 1;
-	}
-	
 	if(*go){
 		if(checker(target, arrB, *bcount)){
 			getrid(target, arrB, bcount);
@@ -67,11 +54,10 @@ void replace(Pos arrR[], Pos arrB[], Pos arrS[], Pos arrT[], Pos arrF[], int *rc
 		if(checker(target, arrR, *rcount)){
 			*found = true;
 		}
-		if(!(checker(target, arrR, *rcount))) {
+		else{
 			arrR[*rcount] = target;
 			(*rcount)++;
 			getrid(target, arrF, fcount);
-			
 		}
 		
 	}
@@ -81,23 +67,22 @@ void replace(Pos arrR[], Pos arrB[], Pos arrS[], Pos arrT[], Pos arrF[], int *rc
 			*found = true;
 		}
 		
-		if(checker(target, arrB, *bcount)){
+		if (checker(target, arrB, *bcount)){
 			*found = true;
 		}
-		if(!(checker(target, arrB, *bcount))){
+		else{
 			arrB[*bcount] = target;
 			(*bcount)++;
 			getrid(target, arrF, fcount);
 		}
 	}
 	
-	if(*found && !s){
+	if(*found && !checker(target, arrS, *scount)){
 		arrS[*scount] = target;
 		(*scount)++;
-		*found = false;
 	}
 	
-	if(*found && s && !t){
+	else if(*found && !checker(target, arrT, *tcount)){
 		arrT[*tcount] = target;
 		(*tcount)++;
 		expand(arrR, arrB, arrS, arrT, arrF, rcount, bcount, scount, tcount, fcount, target, found, go);
@@ -110,17 +95,22 @@ void expand(Pos arrR[], Pos arrB[], Pos arrS[], Pos arrT[], Pos arrF[], int *rco
 	b = target.y;
 	Pos neighbors[4];
 	int n = 0;
-	
+
 	removePos(arrR, arrB, arrS, arrT, rcount, bcount, scount, tcount, target, go);
 	
-	if (a > 1){ //up
-		neighbors[n++] = (Pos){a-1, b};
-		replace(arrR, arrB, arrS, arrT, arrF, rcount, bcount, scount, tcount, fcount, neighbors[n-1], found, go);
+	if(*go){
+		if (a > 1){ //up
+			neighbors[n++] = (Pos){a-1, b};
+			replace(arrR, arrB, arrS, arrT, arrF, rcount, bcount, scount, tcount, fcount, neighbors[n-1], found, go);
+		}
 	}
-	if(a < 3){ //down
-		neighbors[n++] = (Pos){a+1, b};
-		replace(arrR, arrB, arrS, arrT, arrF, rcount, bcount, scount, tcount, fcount, neighbors[n-1], found, go);
+	else{
+		if(a < 3){ //down
+			neighbors[n++] = (Pos){a+1, b};
+			replace(arrR, arrB, arrS, arrT, arrF, rcount, bcount, scount, tcount, fcount, neighbors[n-1], found, go);
+		}
 	}
+
 	if(b > 1){ //left
 		neighbors[n++] = (Pos){a, b-1};
 		replace(arrR, arrB, arrS, arrT, arrF, rcount, bcount, scount, tcount, fcount, neighbors[n-1], found, go);
@@ -132,15 +122,11 @@ void expand(Pos arrR[], Pos arrB[], Pos arrS[], Pos arrT[], Pos arrF[], int *rco
 }
 
 void update(Pos target, Pos arrR[], Pos arrB[], Pos arrS[], Pos arrT[], Pos arrF[], int *rcount, int *bcount, int *scount, int *tcount, int *fcount, bool *found, bool *go, bool *good){
-	*good = false;
-
-	if(!(checker(target, arrS, *scount))){
+	if(!checker(target, arrS, *scount)){
 		arrS[*scount] = target;
 		(*scount)++;
-		*good = !(*good);
 	}
-	
-	if(!(*good) && checker(target, arrS, *scount) && !(checker(target, arrT, *tcount))){
+	else if(checker(target, arrS, *scount) && !checker(target, arrT, *tcount)){
 		arrT[*tcount] = target;
 		(*tcount)++;
 		expand(arrR, arrB, arrS, arrT, arrF, rcount, bcount, scount, tcount, fcount, target, found, go);
@@ -150,7 +136,6 @@ void update(Pos target, Pos arrR[], Pos arrB[], Pos arrS[], Pos arrT[], Pos arrF
 void nextplayermove(Pos pos, bool *good, bool *start, bool *go, bool *found, Pos arrF[], Pos arrR[], Pos arrB[], Pos arrS[], Pos arrT[], int *rcount, int *bcount,
  int *scount, int *fcount, int *tcount, int *val){
 	*good = false;
-	
 	if(*start){     //start phase
 
 		if(checker(pos, arrF, *fcount)){
@@ -165,14 +150,12 @@ void nextplayermove(Pos pos, bool *good, bool *start, bool *go, bool *found, Pos
 				(*rcount)++;
 				arrS[*scount] = pos;
 				(*scount)++;
-				getrid(pos, arrF, fcount);
 			}
 			else{
 				arrB[*bcount] = pos;     
 				(*bcount)++;
 				arrS[*scount] = pos;
 				(*scount)++;
-				getrid(pos, arrF, fcount);
 			}
 			*go = !(*go);
 		}
@@ -182,16 +165,13 @@ void nextplayermove(Pos pos, bool *good, bool *start, bool *go, bool *found, Pos
 	}
 	
 	else{     //expand phase
-		if((*go && checker(pos, arrR, *rcount)) || (!(*go) && checker(pos, arrB, *bcount))){
+		if((*go && checker(pos, arrR, *rcount)) || (!(*go) && checker(pos, arrB, *bcount))){ //checks if the input is already on the player's posession
 			*good = true;
-			*go = !(*go);
 			(*val)++;
 			update(pos, arrR, arrB, arrS, arrT, arrF, rcount, bcount, scount, tcount, fcount, found, go, good);
+			*go = !(*go);
 		}
 	}
-	
-	
-	
 }
 
 void display(Pos arrM[], Pos arrR[], Pos arrB[], int rcount, int bcount){
@@ -210,8 +190,5 @@ void display(Pos arrM[], Pos arrR[], Pos arrB[], int rcount, int bcount){
     	if(i == 2 || i == 5 || i == 8){
         	printf("\n");
     	}
-	}
-	printf("\n");	
+	}	
 }
-
-
