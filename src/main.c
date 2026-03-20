@@ -1,4 +1,4 @@
-#include "../include/header.h"
+#include "functions_dstru.c"
 
 int main() {
 
@@ -59,7 +59,7 @@ int main() {
 			}
 			else{
 				printf("*****Expansion Phase*****\n");
-				printf("Note: A player can only pick a cell that is in their possesion\n");
+				printf("Note: Players can only pick a cell that they currently own\n");
 			}	
 					
 			if(go){
@@ -70,7 +70,10 @@ int main() {
 			}
     		scanf("%d %d", &pos.x, &pos.y);
     		nextplayermove(pos, &good, &start, &go, &found, F, R, B, S, T, &rcount, &bcount, &scount, &fcount, &tcount, &val);
-    		
+    		if(!good){
+    			printf("Invalid Input\n");
+    			system("pause");
+			}
 		}while(!good);
 		
 		GameOver(fcount, val, start, rcount, bcount, &over);
