@@ -33,13 +33,13 @@ int main() {
 	Pos B[9]; //stores player B cells
 	int bcount = 0;
 	
-	Pos S[9];
+	Pos S[9]; //stores cells that was previously occupied by either player. A player's cell will be removed from this after using that cell to expand
 	int scount = 0;
 	
-	Pos T[9];
+	Pos T[9]; //Temporarily stores cells that was used for expansion
 	int tcount = 0;
 	
-	Pos F[9]; //Contains free cells
+	Pos F[9]; //Stores free cells
 	int fcount = 9;
 	
 	for (int i = 0; i < 9; i++) {
@@ -68,11 +68,20 @@ int main() {
 			else{
 				printf("Enter a cell for B (x y): ");
 			}
-    		scanf("%d %d", &pos.x, &pos.y);
-    		nextplayermove(pos, &good, &start, &go, &found, F, R, B, S, T, &rcount, &bcount, &scount, &fcount, &tcount, &val);
-    		if(!good){
+			
+    		int input = scanf("%d %d", &pos.x, &pos.y);
+			if (input != 2) {
     			printf("Invalid Input\n");
+    			int c;
+    			while((c = getchar()) != '\n' && c != EOF);
     			system("pause");
+			}
+			else {
+    			nextplayermove(pos, &good, &start, &go, &found, F, R, B, S, T, &rcount, &bcount, &scount, &fcount, &tcount, &val);
+    			if (!good) {
+        			printf("Invalid Input\n");
+        			system("pause");
+    			}
 			}
 		}while(!good);
 		
@@ -97,9 +106,3 @@ int main() {
 	
 	return 0;
 }
-
-
-
-
-
-
