@@ -47,7 +47,7 @@ void getrid(Pos target, Pos arr[], int *count){
  *It also removes that cell from set S and set T
 */
 void removePos(Pos arrR[], Pos arrB[], Pos arrS[], Pos arrT[], int *rcount, int *bcount,int *scount, int *tcount, Pos target, bool *go){
-	
+	   
 	if (*go)
 		getrid(target, arrR, rcount);
 	else
